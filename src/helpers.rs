@@ -13,12 +13,18 @@ impl AppDateTime {
 
         let local_datetime = Local
             .from_local_datetime(&datetime)
-            .single()
+            .earliest()
             .context(format!("failed to convert local time: {t}"))?;
 
         Ok(Self {
             datetime: local_datetime,
         })
+    }
+
+    pub fn now() -> Self {
+        Self {
+            datetime: Local::now(),
+        }
     }
 
     pub fn to_milliseconds(&self) -> i64 {
@@ -28,7 +34,7 @@ impl AppDateTime {
 
 #[cfg(test)]
 mod tests {
-    use crate::helpers::AppDateTime;
+    use super::*;
 
     #[test]
     fn datetime_create_vaild() {
