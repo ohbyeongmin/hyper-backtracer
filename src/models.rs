@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+pub type TimeRawData = i64;
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CandleSnapshotBody {
     #[serde(rename = "type")]
@@ -17,14 +19,14 @@ pub struct CandleSnapshotPayload {
     pub interval: String,
 
     // epoch milliseconds
-    pub start_time: i64,
-    pub end_time: i64,
+    pub start_time: TimeRawData,
+    pub end_time: TimeRawData,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct CandleSnapshotResponse {
     #[serde(rename = "T")]
-    pub close_time: i64,
+    pub close_time: TimeRawData,
 
     #[serde(rename = "c")]
     pub close_price: String,
@@ -45,7 +47,7 @@ pub struct CandleSnapshotResponse {
     pub symbol: String,
 
     #[serde(rename = "t")]
-    pub open_time: i64,
+    pub open_time: TimeRawData,
 
     #[serde(rename = "v")]
     pub volume: String,
