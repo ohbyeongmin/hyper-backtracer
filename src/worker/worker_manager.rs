@@ -1,28 +1,50 @@
+use std::sync::Arc;
+
 use crate::{
     commander::ClientCommand,
+    helpers::{CandleIntervals, InputCandleIntervals},
     worker::client_worker::{Action, ClientWorker},
 };
+use anyhow::{Context, Result};
 use tokio::{sync::mpsc, task::JoinHandle};
 
-pub struct WorkerManager {
+pub struct WorkerManager;
+
+#[derive(Debug)]
+pub struct Config {
     coin_symbol: String,
-    intervals: Vec<String>,
+    intervals: InputCandleIntervals,
+    tx: mpsc::Sender<ClientCommand>,
 }
 
-impl WorkerManager {
-    pub fn new(coin_symbol: String, intervals: Vec<String>) -> Self {
+impl Config {
+    pub fn new(
+        coin_symbol: String,
+        intervals: InputCandleIntervals,
+        tx: mpsc::Sender<ClientCommand>,
+    ) -> Self {
         Self {
             coin_symbol,
             intervals,
+            tx,
         }
     }
+}
 
-    pub async fn start(&self, tx: mpsc::Sender<ClientCommand>) -> Vec<JoinHandle<()>> {
+impl WorkerManager {
+    pub async fn start(config: Config) -> Result<Vec<JoinHandle<()>>> {
+        let intervals = match config.intervals {
+            InputCandleIntervals::Default => CandleIntervals::default(),
+            InputCandleIntervals::Custom(input) => {
+                CandleIntervals::new(&input).context("failed parse custom intervals")?
+            }
+        };
+
         let mut worker_handles: Vec<JoinHandle<()>> = Vec::new();
 
-        for interval in self.intervals.clone() {
-            let tx = tx.clone();
-            let coin_symbol = self.coin_symbol.clone();
+        for interval in intervals.into_iter() {
+            let tx = config.tx.clone();
+            let coin_symbol = config.coin_symbol.clone();
 
             let handle = tokio::spawn(async move {
                 let action = Action::GetAllCandle {
@@ -39,8 +61,6 @@ impl WorkerManager {
             worker_handles.push(handle);
         }
 
-        drop(tx);
-
-        worker_handles
+        Ok(worker_handles)
     }
 }
