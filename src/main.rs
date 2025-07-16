@@ -1,11 +1,16 @@
 //use hyper_backtracer::manager::Manager;
 
+use std::sync::Arc;
+
 use futures::future;
 
 use tokio::sync::mpsc;
 
 use hyper_backtracer::{
-    client::InfoClient, commander::ClientCommand, constants, worker::worker_manager::WorkerManager,
+    client::InfoClient,
+    commander::ClientCommand,
+    constants, helpers,
+    worker::worker_manager::{self, WorkerManager},
 };
 
 #[tokio::main]
@@ -24,13 +29,14 @@ async fn main() {
         }
     });
 
-    let worker_manager = WorkerManager::new(
+    let config = worker_manager::Config::new(
         "HYPE".to_string(),
-        vec!["5m".to_string(), "15m".to_string()],
+        helpers::InputCandleIntervals::Default,
+        tx,
     );
 
-    let handle_workers = worker_manager.start(tx).await;
+    let worker_manager = WorkerManager::start(config).await.unwrap();
 
     handle_info_client.await.unwrap();
-    future::join_all(handle_workers).await;
+    future::join_all(worker_manager).await;
 }
