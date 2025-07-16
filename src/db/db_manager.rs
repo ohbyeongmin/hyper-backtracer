@@ -1,4 +1,4 @@
-use tokio::time::{sleep, Duration};
+use tokio::time::{Duration, sleep};
 
 pub struct DbManager {
     pub name: String,

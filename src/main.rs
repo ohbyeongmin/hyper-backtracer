@@ -1,17 +1,11 @@
-//use hyper_backtracer::manager::Manager;
-
-use std::sync::Arc;
-
 use futures::future;
-
-use tokio::sync::mpsc;
-
 use hyper_backtracer::{
     client::InfoClient,
     commander::ClientCommand,
     constants, helpers,
     worker::worker_manager::{self, WorkerManager},
 };
+use tokio::sync::mpsc;
 
 #[tokio::main]
 async fn main() {

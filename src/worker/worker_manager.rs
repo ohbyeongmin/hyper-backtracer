@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{
     commander::ClientCommand,
     helpers::{CandleIntervals, InputCandleIntervals},
