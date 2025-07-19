@@ -1,6 +1,11 @@
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 pub type TimeRawData = i64;
+
+pub type ClientResponse = Result<Vec<CandleSnapshotResponse>>;
+
+pub const CANDLE_SNAPSHOT_BODY_TYPE: &str = "";
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CandleSnapshotBody {

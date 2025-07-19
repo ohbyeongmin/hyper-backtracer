@@ -1,7 +1,84 @@
-use crate::constants;
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Error, Result};
 use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 use regex::Regex;
+
+use crate::common::constants;
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct CandleIntervals {
+    intervals: Vec<String>,
+}
+
+impl TryFrom<&str> for CandleIntervals {
+    type Error = Error;
+
+    fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
+        match value {
+            "default" => Ok(Self::default()),
+            _ => Self::new(value),
+        }
+    }
+}
+
+impl IntoIterator for CandleIntervals {
+    type Item = String;
+    type IntoIter = std::vec::IntoIter<String>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.intervals.into_iter()
+    }
+}
+
+impl Default for CandleIntervals {
+    fn default() -> Self {
+        let default_vale = constants::DEFAULT_CANDLE_INTERVALS;
+        Self::new(default_vale).unwrap()
+    }
+}
+
+impl CandleIntervals {
+    fn validate_format(input: &str) -> Result<bool> {
+        let rege = Regex::new(r"^(\d+[mhdwM])(,\d+[mhdwM])*$").context("failed compile regex")?;
+        Ok(rege.is_match(input))
+    }
+
+    fn validate_interval_value(input: &str) -> bool {
+        input.split(",").all(|interval| {
+            matches!(
+                interval,
+                "1m" | "3m"
+                    | "5m"
+                    | "15m"
+                    | "30m"
+                    | "1h"
+                    | "2h"
+                    | "4h"
+                    | "8h"
+                    | "12h"
+                    | "1d"
+                    | "3d"
+                    | "1w"
+                    | "1M"
+            )
+        })
+    }
+
+    pub fn new(input: &str) -> Result<Self> {
+        let input = input.trim();
+
+        if !Self::validate_format(input)? {
+            return Err(anyhow!("intervals format: {input}"));
+        }
+
+        if !Self::validate_interval_value(input) {
+            return Err(anyhow!("intervals value: {input}"));
+        }
+
+        let intervals = input.split(",").map(|s| s.to_string()).collect();
+
+        Ok(Self { intervals })
+    }
+}
 
 #[derive(Debug)]
 pub struct AppDateTime {
@@ -31,76 +108,6 @@ impl AppDateTime {
 
     pub fn to_milliseconds(&self) -> i64 {
         self.datetime.timestamp_millis()
-    }
-}
-
-#[derive(Debug)]
-pub enum InputCandleIntervals {
-    Default,
-    Custom(String),
-}
-
-#[derive(Debug, PartialEq)]
-pub struct CandleIntervals {
-    intervals: Vec<String>,
-}
-
-impl Default for CandleIntervals {
-    fn default() -> Self {
-        Self::new(constants::DEFAULT_CANDLE_INTERVALS).unwrap()
-    }
-}
-
-impl IntoIterator for CandleIntervals {
-    type Item = String;
-    type IntoIter = std::vec::IntoIter<String>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.intervals.into_iter()
-    }
-}
-
-impl CandleIntervals {
-    fn validate_format(input: &str) -> bool {
-        let rege = Regex::new(r"^(\d+[mhdwM])(,\d+[mhdwM])*$").expect("faild regex compile");
-        rege.is_match(input)
-    }
-
-    fn validate_interval_value(input: &str) -> bool {
-        input.split(",").all(|interval| {
-            matches!(
-                interval,
-                "1m" | "3m"
-                    | "5m"
-                    | "15m"
-                    | "30m"
-                    | "1h"
-                    | "2h"
-                    | "4h"
-                    | "8h"
-                    | "12h"
-                    | "1d"
-                    | "3d"
-                    | "1w"
-                    | "1M"
-            )
-        })
-    }
-
-    pub fn new(input: &str) -> Result<Self> {
-        let input = input.trim();
-
-        if !Self::validate_format(input) {
-            return Err(anyhow!("intervals format: {input}"));
-        }
-
-        if !Self::validate_interval_value(input) {
-            return Err(anyhow!("intervals value: {input}"));
-        }
-
-        let intervals = input.split(",").map(|s| s.to_string()).collect();
-
-        Ok(Self { intervals })
     }
 }
 
