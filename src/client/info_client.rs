@@ -1,9 +1,7 @@
-use anyhow::{Context, Result};
+use anyhow::Context;
 use reqwest::Client;
 
-use crate::models::{CandleSnapshotBody, CandleSnapshotResponse};
-
-pub type Response = Result<Vec<CandleSnapshotResponse>>;
+use crate::common::dto::client::{CandleSnapshotBody, CandleSnapshotResponse, ClientResponse};
 
 #[derive(Clone)]
 pub struct InfoClient {
@@ -19,7 +17,7 @@ impl InfoClient {
         }
     }
 
-    pub async fn get_candle_snapshot(&self, req: CandleSnapshotBody) -> Response {
+    pub async fn get_candle_snapshot(&self, req: CandleSnapshotBody) -> ClientResponse {
         let resp = self
             .client
             .post(format!("{}/info", self.base_url))
