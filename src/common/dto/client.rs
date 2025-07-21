@@ -5,7 +5,7 @@ pub type TimeRawData = i64;
 
 pub type ClientResponse = Result<Vec<CandleSnapshotResponse>>;
 
-pub const CANDLE_SNAPSHOT_BODY_TYPE: &str = "";
+pub const CANDLE_SNAPSHOT_BODY_TYPE: &str = "candleSnapshot";
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CandleSnapshotBody {
