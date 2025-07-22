@@ -24,12 +24,12 @@ impl InfoClient {
             .json(&req)
             .send()
             .await
-            .context(format!("Failed to request: {req:?}"))?;
+            .context(format!("failed to request: {req:?}"))?;
 
         let candles: Vec<CandleSnapshotResponse> = resp
             .json()
             .await
-            .context(format!("Failed to convert response: reqest: {req:?}"))?;
+            .context(format!("failed to get response: reqest: {req:?}"))?;
 
         Ok(candles)
     }
