@@ -1,5 +1,5 @@
-use anyhow::{Context, Error, Result, anyhow};
-use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
+use anyhow::{anyhow, Context, Error, Result};
+use chrono::{DateTime, Local, NaiveDateTime, TimeZone, Utc};
 use regex::Regex;
 
 use crate::common::constants;
@@ -98,6 +98,13 @@ impl AppDateTime {
         Ok(Self {
             datetime: local_datetime,
         })
+    }
+
+    pub fn from_milli_timestamp(timestamp: i64) -> Self {
+        let datetime = DateTime::from_timestamp_millis(timestamp)
+            .unwrap()
+            .with_timezone(&Local);
+        Self { datetime }
     }
 
     pub fn now() -> Self {
