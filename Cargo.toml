@@ -14,3 +14,6 @@ thiserror = { version = "2.0.12", features = ["std"]}
 anyhow = "1.0.98"
 regex = "1.11.1"
 futures = "0.3.31"
+dotenv = "0.15.0"
+dotenv_codegen = "0.15.0"
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-rustls"]}

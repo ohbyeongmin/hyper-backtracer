@@ -39,6 +39,7 @@ impl WorkerManager {
         let handle_recv_candle = tokio::spawn(async move {
             while let Some(candle) = candle_rx.recv().await {
                 println!("get candle from client: {}", candle[0].interval);
+                println!("{:?}", candle[0]);
                 println!("count: {}", candle.len());
             }
         });

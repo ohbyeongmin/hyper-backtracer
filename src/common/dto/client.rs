@@ -1,5 +1,6 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 
 pub type TimeRawData = i64;
 
@@ -28,7 +29,7 @@ pub struct CandleSnapshotPayload {
     pub end_time: TimeRawData,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, FromRow)]
 pub struct CandleSnapshotResponse {
     #[serde(rename = "T")]
     pub close_time: TimeRawData,
@@ -43,7 +44,7 @@ pub struct CandleSnapshotResponse {
     pub low_price: String,
 
     #[serde(rename = "n")]
-    pub number_of_trades: u64,
+    pub number_of_trades: i64,
 
     #[serde(rename = "o")]
     pub open_price: String,

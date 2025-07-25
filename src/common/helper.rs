@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Context, Error, Result};
-use chrono::{DateTime, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 use regex::Regex;
 
 use crate::common::constants;
