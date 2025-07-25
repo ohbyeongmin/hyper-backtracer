@@ -82,10 +82,18 @@ pub async fn insert_candle_batches(pool: PgPool, candles: CandleSnapshot) -> Res
     Ok(())
 }
 
-pub async fn get_last_close_time(pool: PgPool, symbol: &str, interval: &str) -> Result<i64> {
-    let last_close_time = sqlx::query!(
+pub async fn get_last_close_time(
+    pool: PgPool,
+    symbol: &str,
+    interval: &str,
+) -> Result<Option<i64>> {
+    match  sqlx::query!(
         "SELECT close_time FROM hyper_candle_snapshot WHERE symbol = $1::varchar AND interval = $2::varchar ORDER BY close_time DESC LIMIT 1"
         , symbol, interval)
-        .fetch_one(&pool).await?;
-    Ok(last_close_time.close_time)
+        .fetch_optional(&pool).await? {
+        Some(record) => {
+           Ok(Some(record.close_time)) 
+        },
+        None => Ok(None),
+    }
 }
