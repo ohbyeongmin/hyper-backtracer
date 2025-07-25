@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+use sqlx::{Pool, Postgres, postgres::PgPoolOptions};
 
 use crate::common::dto::db::CandleDataDTO;
 

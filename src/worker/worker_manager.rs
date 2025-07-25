@@ -3,8 +3,8 @@ use crate::{
     common::{
         constants,
         dto::client::{
-            CandleSnapshotBody, CandleSnapshotPayload, CandleSnapshotResponse,
-            CANDLE_SNAPSHOT_BODY_TYPE,
+            CANDLE_SNAPSHOT_BODY_TYPE, CandleSnapshotBody, CandleSnapshotPayload,
+            CandleSnapshotResponse,
         },
         helper::{AppDateTime, CandleIntervals},
     },
