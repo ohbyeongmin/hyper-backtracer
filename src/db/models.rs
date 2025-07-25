@@ -17,7 +17,7 @@ impl TryFrom<Vec<CandleSnapshotResponse>> for CandleSnapshot {
         }
 
         let symbol = value[0].symbol.clone();
-        let interval = value[0].symbol.clone();
+        let interval = value[0].interval.clone();
 
         Ok(Self {
             symbol,
