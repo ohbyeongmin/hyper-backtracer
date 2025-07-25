@@ -1,14 +1,14 @@
 use crate::common::dto::client::CandleSnapshotResponse;
-use anyhow::{Error, Result, anyhow};
+use anyhow::{anyhow, Error, Result};
 
 #[derive(Debug)]
-pub struct CandleDataDTO {
+pub struct CandleSnapshot {
     pub symbol: String,
     pub interval: String,
     pub datas: Vec<CandleSnapshotResponse>,
 }
 
-impl TryFrom<Vec<CandleSnapshotResponse>> for CandleDataDTO {
+impl TryFrom<Vec<CandleSnapshotResponse>> for CandleSnapshot {
     type Error = Error;
 
     fn try_from(value: Vec<CandleSnapshotResponse>) -> Result<Self> {

@@ -1,1 +1,2 @@
-pub mod db_manager;
+pub mod core;
+pub mod models;
