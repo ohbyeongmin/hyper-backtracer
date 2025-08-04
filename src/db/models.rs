@@ -1,5 +1,5 @@
 use crate::common::dto::client::CandleSnapshotResponse;
-use anyhow::{anyhow, Error, Result};
+use anyhow::{Error, Result, anyhow};
 
 #[derive(Debug)]
 pub struct CandleSnapshot {
